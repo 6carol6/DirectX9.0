@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _D3DUTILITY_H__
+#define _D3DUTILITY_H__
 #include <d3dx9.h>
 
 namespace d3d {
@@ -32,3 +33,5 @@ namespace d3d {
 		}
 	}
 }
+
+#endif
