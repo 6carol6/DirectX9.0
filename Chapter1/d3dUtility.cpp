@@ -13,7 +13,10 @@ bool d3d::InitD3D(HINSTANCE hInstance, int width, int height, bool windowed, D3D
 	HWND hwnd = CreateWindow(L"Direct3D9App", L"Direct3D9App", WS_OVERLAPPEDWINDOW,
 		                     0, 0, width, height, NULL, NULL, hInstance, NULL);
 
-	if (!hwnd) return false;
+	if (!hwnd) {
+		::MessageBox(0, TEXT("CreateWindow() - FAILED"), 0, 0);
+		return false;
+	}
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
 
@@ -38,10 +41,20 @@ bool d3d::InitD3D(HINSTANCE hInstance, int width, int height, bool windowed, D3D
 	D3DPRESENT_PARAMETERS d3dpp;
 	d3dpp.BackBufferWidth = width;
 	d3dpp.BackBufferHeight = height;
+	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8;
+	d3dpp.BackBufferCount = 1;
+	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
+	d3dpp.MultiSampleQuality = 0;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.Windowed = windowed;
 	d3dpp.hDeviceWindow = hwnd;
+	d3dpp.EnableAutoDepthStencil = true;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+	d3dpp.Flags = 0;
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 	
-	HRESULT hr = _d3d9->CreateDevice(D3DADAPTER_DEFAULT, deviceType, hwnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, device);
+	HRESULT hr = _d3d9->CreateDevice(D3DADAPTER_DEFAULT, deviceType, hwnd, vp, &d3dpp, device);
 	if (FAILED(hr)) {
 		::MessageBox(0, TEXT("CreateDevice() - FAILED"), 0, 0);
 		return false;
