@@ -1,3 +1,4 @@
+
 #include "d3dUtility.h"
 IDirect3DDevice9 *Device = 0;
 IDirect3DVertexBuffer9* VB = 0;
@@ -38,19 +39,19 @@ bool Setup() {
 	VB->Lock(0, 0, (void**)&vertices, 0);
 
 	//vertices of a triangle
-	vertices[0] = Vertex(0.0f, 1.0f, 0.0f);
-	vertices[1] = Vertex(1.0f, 0.0f, 0.0f);
-	vertices[2] = Vertex(-1.0f, 0.0f, 0.0f);
+	vertices[0] = Vertex(-1.0f, 0.0f, 1.0f);
+	vertices[1] = Vertex(0.0f, 1.0f, 1.0f);
+	vertices[2] = Vertex(1.0f, 0.0f, 1.0f);
 
 	VB->Unlock();
 
 	DWORD* indices = 0;
 	IB->Lock(0, 0, (void**)&indices, 0);
 
-	indices[0] = 0; indices[1] = 1; indices[2] = 2;
+	indices[0] =2; indices[1] = 1; indices[2] = 0;
 
 	IB->Unlock();
-
+	
 	// Position and aim the camera
 	D3DXVECTOR3 position(0.0f, 0.0f, -5.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
@@ -60,7 +61,7 @@ bool Setup() {
 	D3DXMatrixLookAtLH(&V, &position, &target, &up);
 
 	Device->SetTransform(D3DTS_VIEW, &V);
-
+	
 	// Set the projection matrix.
 	D3DXMATRIX proj;
 	D3DXMatrixPerspectiveFovLH(
