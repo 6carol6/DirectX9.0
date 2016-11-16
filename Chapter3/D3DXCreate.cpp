@@ -10,9 +10,9 @@ ID3DXMesh* Cylinder = 0;
 ID3DXMesh* Torus = 0;
 
 bool Setup() {
-	D3DXCreateBox(Device, 1.0f, 1.0f, 1.0f, &Box, 0);
-	D3DXCreateSphere(Device, 2.0f, 4, 4, &Sphere, 0);
-	D3DXCreateCylinder(Device, 1.0f, 1.0f, 3.0f, 3, 6, &Cylinder, 0);
+	D3DXCreateBox(Device, 2.0f, 2.0f, 2.0f, &Box, 0);
+	D3DXCreateSphere(Device, 2.0f, 20, 20, &Sphere, 0);
+	D3DXCreateCylinder(Device, 1.0f, 1.0f, 3.0f, 20, 6, &Cylinder, 0);
 	D3DXCreateTorus(Device, 1.0f, 2.0f, 10, 10, &Torus, 0);
 
 	// Position and aim the camera
@@ -43,13 +43,27 @@ bool Setup() {
 
 bool Display(float timeDelta) {
 	if (Device) {
+		// translate to world space
+		D3DXMATRIX boxWorldMatrix;
+		D3DXMatrixTranslation(&boxWorldMatrix, -2.0f, -2.0f, 0.0f);
+		D3DXMATRIX sphereWorldMatrix;
+		D3DXMatrixTranslation(&sphereWorldMatrix, -2.0f, 2.0f, 0.0f);
+		D3DXMATRIX cylinderWorldMatrix;
+		D3DXMatrixTranslation(&cylinderWorldMatrix, 2.0f, 2.0f, 0.0f);
+		D3DXMATRIX torusWorldMatrix;
+		D3DXMatrixTranslation(&torusWorldMatrix, 2.0f, -2.0f, 0.0f);
+
 		//draw the scene:
 		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xffffffff, 1.0f, 0);
 		Device->BeginScene();
 
+		Device->SetTransform(D3DTS_WORLD, &boxWorldMatrix);
 		Box->DrawSubset(0);
+		Device->SetTransform(D3DTS_WORLD, &sphereWorldMatrix);
 		Sphere->DrawSubset(0);
+		Device->SetTransform(D3DTS_WORLD, &cylinderWorldMatrix);
 		Cylinder->DrawSubset(0);
+		Device->SetTransform(D3DTS_WORLD, &torusWorldMatrix);
 		Torus->DrawSubset(0);
 
 		Device->EndScene();
