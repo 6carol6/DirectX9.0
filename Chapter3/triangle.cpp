@@ -39,16 +39,16 @@ bool Setup() {
 	VB->Lock(0, 0, (void**)&vertices, 0);
 
 	//vertices of a triangle
-	vertices[0] = Vertex(-1.0f, 0.0f, 1.0f);
-	vertices[1] = Vertex(0.0f, 1.0f, 1.0f);
-	vertices[2] = Vertex(1.0f, 0.0f, 1.0f);
+	vertices[0] = Vertex(-1.0f, 0.0f, 2.0f);
+	vertices[1] = Vertex(0.0f, 1.0f, 2.0f);
+	vertices[2] = Vertex(1.0f, 0.0f, 2.0f);
 
 	VB->Unlock();
 
-	DWORD* indices = 0;
+	WORD* indices = 0;
 	IB->Lock(0, 0, (void**)&indices, 0);
 
-	indices[0] =2; indices[1] = 1; indices[2] = 0;
+	indices[0] =0; indices[1] = 1; indices[2] = 2;
 
 	IB->Unlock();
 	
