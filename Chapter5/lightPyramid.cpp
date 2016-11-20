@@ -1,3 +1,4 @@
+/*
 #include "d3dUtility.h"
 
 IDirect3DDevice9* Device = 0;
@@ -79,7 +80,7 @@ bool Setup() {
 	Device->SetRenderState(D3DRS_SPECULARENABLE, true);
 
 	// Position and aim the camera
-	D3DXVECTOR3 position(2.0f, 2.0f, -5.0f);
+	D3DXVECTOR3 position(0.0f, 1.0f, -3.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
@@ -100,16 +101,41 @@ bool Setup() {
 
 	return true;
 }
-bool Display(float timeDelta) {
-	if (Device) {
-		//draw the scene:
-		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xff000000, 1.0f, 0);
+
+void Cleanup()
+{
+	d3d::Release<IDirect3DVertexBuffer9*>(Pyramid);
+}
+
+bool Display(float timeDelta)
+{
+	if (Device)
+	{
+		// 
+		// Update the scene: Rotate the pyramid.
+		//
+
+		D3DXMATRIX yRot;
+
+		static float y = 0.0f;
+
+		D3DXMatrixRotationY(&yRot, y);
+		y += timeDelta;
+
+		if (y >= 6.28f)
+			y = 0.0f;
+
+		Device->SetTransform(D3DTS_WORLD, &yRot);
+
+		//
+		// Draw the scene:
+		//
+
+		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 		Device->BeginScene();
 
 		Device->SetStreamSource(0, Pyramid, 0, sizeof(Vertex));
 		Device->SetFVF(Vertex::FVF);
-
-		// Draw triangle.
 		Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 4);
 
 		Device->EndScene();
@@ -118,9 +144,6 @@ bool Display(float timeDelta) {
 	return true;
 }
 
-void Cleanup() {
-	d3d::Release<IDirect3DVertexBuffer9*>(Pyramid);
-}
 
 LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
@@ -153,3 +176,4 @@ int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	Device->Release();
 	return 0;
 }
+*/
