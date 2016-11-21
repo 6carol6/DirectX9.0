@@ -65,19 +65,35 @@ bool Display(float timeDelta) {
 		D3DXMATRIX torusWorldMatrix;
 		D3DXMatrixTranslation(&torusWorldMatrix, 2.0f, -2.0f, 0.0f);
 
+		D3DXMATRIX yRot;
+
+		static float y = 0.0f;
+
+		D3DXMatrixRotationY(&yRot, y);
+		y += timeDelta;
+
+		if (y >= 6.28f)
+			y = 0.0f;
+
+		//Device->SetTransform(D3DTS_WORLD, &yRot);
+
 		//draw the scene:
 		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 		Device->BeginScene();
 
+		boxWorldMatrix *= yRot;
 		Device->SetTransform(D3DTS_WORLD, &boxWorldMatrix);
 		Device->SetMaterial(&d3d::RED_MTRL);
 		Box->DrawSubset(0);
+		sphereWorldMatrix *= yRot;
 		Device->SetTransform(D3DTS_WORLD, &sphereWorldMatrix);
 		Device->SetMaterial(&d3d::BLUE_MTRL);
 		Sphere->DrawSubset(0);
+		cylinderWorldMatrix *= yRot;
 		Device->SetTransform(D3DTS_WORLD, &cylinderWorldMatrix);
 		Device->SetMaterial(&d3d::YELLO_MTRL);
 		Cylinder->DrawSubset(0);
+		torusWorldMatrix *= yRot;
 		Device->SetTransform(D3DTS_WORLD, &torusWorldMatrix);
 		Device->SetMaterial(&d3d::GREEN_MTRL);
 		Torus->DrawSubset(0);
