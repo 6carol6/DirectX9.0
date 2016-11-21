@@ -17,7 +17,7 @@ bool Setup() {
 	D3DXCreateTorus(Device, 1.0f, 2.0f, 10, 10, &Torus, 0);
 
 	// Position and aim the camera
-	D3DXVECTOR3 position(0.0f, 0.0f, -5.0f);
+	D3DXVECTOR3 position(0.0f, 0.0f, -10.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
@@ -37,15 +37,11 @@ bool Setup() {
 	Device->SetTransform(D3DTS_PROJECTION, &proj);
 
 	// directional light
-	D3DLIGHT9 dir;
-	::ZeroMemory(&dir, sizeof(dir));
-	dir.Type = D3DLIGHT_DIRECTIONAL;
-	dir.Diffuse = d3d::WHITE;
-	dir.Specular = d3d::WHITE*0.3f;
-	dir.Ambient = d3d::WHITE*0.6f;
-	dir.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 dir(1.0f, 0.0f, 0.0f);
+	D3DXCOLOR c = d3d::WHITE;
+	D3DLIGHT9 dirLight = d3d::InitDirectionalLight(&dir, &c);
 	
-	Device->SetLight(0, &dir);
+	Device->SetLight(0, &dirLight);
 	Device->LightEnable(0, true);
 
 	Device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
