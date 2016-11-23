@@ -80,6 +80,28 @@ bool Display(float timeDelta) {
 
 		Device->SetStreamSource(0, Quad, 0, sizeof(Vertex));
 		Device->SetFVF(Vertex::FVF);
+
+		// set wrap adress mode
+		if (::GetAsyncKeyState('W') & 0x80000f) {
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
+		}
+		// set border color mode
+		if (::GetAsyncKeyState('B') & 0x80000f) {
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_BORDER);
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_BORDER);
+			Device->SetSamplerState(0, D3DSAMP_BORDERCOLOR, 0x000000ff);
+		}
+		// set clamp address mode
+		if (::GetAsyncKeyState('C') & 0x80000f) {
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+		}
+		if (::GetAsyncKeyState('M') & 0x80000f) {
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_MIRROR);
+			Device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_MIRROR);
+		}
+
 		Device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 2);
 
 		Device->EndScene();
