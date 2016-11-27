@@ -2,6 +2,7 @@
 IDirect3DDevice9 *Device = 0;
 IDirect3DVertexBuffer9* VB = 0;
 IDirect3DIndexBuffer9* IB = 0;
+IDirect3DTexture9* Tex = 0;
 const int Width = 800;
 const int Height = 600;
 
@@ -23,7 +24,7 @@ const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
 bool Setup() {
 	// Create vertex and index buffers.
 	Device->CreateVertexBuffer(
-		8 * sizeof(Vertex),
+		24 * sizeof(Vertex),
 		D3DUSAGE_WRITEONLY,
 		Vertex::FVF,
 		D3DPOOL_MANAGED,
@@ -42,15 +43,41 @@ bool Setup() {
 	Vertex* vertices;
 	VB->Lock(0, 0, (void**)&vertices, 0);
 
-	// vertices of a unit cube
-	vertices[0] = Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, );
-	vertices[1] = Vertex(-1.0f,  1.0f, -1.0f);
-	vertices[2] = Vertex( 1.0f,  1.0f, -1.0f);
-	vertices[3] = Vertex( 1.0f, -1.0f, -1.0f);
-	vertices[4] = Vertex(-1.0f, -1.0f,  1.0f);
-	vertices[5] = Vertex(-1.0f,  1.0f,  1.0f);
-	vertices[6] = Vertex( 1.0f,  1.0f,  1.0f);
-	vertices[7] = Vertex( 1.0f, -1.0f,  1.0f);
+	// front
+	vertices[0] = Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
+	vertices[1] = Vertex(-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f);
+	vertices[2] = Vertex( 1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f);
+	vertices[3] = Vertex( 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f);
+
+	// back
+	vertices[4] = Vertex(-1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[5] = Vertex(-1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	vertices[6] = Vertex( 1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+	vertices[7] = Vertex( 1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+
+	// left
+	vertices[8] = Vertex(-1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	vertices[9] = Vertex(-1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,1.0f, 0.0f);
+	vertices[10] = Vertex(-1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[11] = Vertex(-1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// right
+	vertices[12] = Vertex(1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	vertices[13] = Vertex(1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+	vertices[14] = Vertex(1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[15] = Vertex(1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+
+	// up
+	vertices[16] = Vertex(-1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+	vertices[17] = Vertex(1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	vertices[18] = Vertex(1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[19] = Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+
+	// down
+	vertices[20] = Vertex(-1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
+	vertices[21] = Vertex(1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f);
+	vertices[22] = Vertex(1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[23] = Vertex(-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f);
 
 	VB->Unlock();
 
@@ -67,22 +94,32 @@ bool Setup() {
 	indices[9] = 4; indices[10] = 7; indices[11] = 6;
 	 
 	// left side
-	indices[12] = 4; indices[13] = 5; indices[14] = 1;
-	indices[15] = 4; indices[16] = 1; indices[17] = 0;
+	indices[12] = 8; indices[13] = 10; indices[14] = 9;
+	indices[15] = 8; indices[16] = 11; indices[17] = 10;
 
 	// right side
-	indices[18] = 3; indices[19] = 2; indices[20] = 6;
-	indices[21] = 3; indices[22] = 6; indices[23] = 7;
+	indices[18] = 12; indices[19] = 13; indices[20] = 14;
+	indices[21] = 12; indices[22] = 14; indices[23] = 15;
 
 	// top
-	indices[24] = 1; indices[25] = 5; indices[26] = 6;
-	indices[27] = 1; indices[28] = 6; indices[29] = 2;
+	indices[24] = 16; indices[25] = 17; indices[26] = 18;
+	indices[27] = 16; indices[28] = 18; indices[29] = 19;
 
 	// bottom
-	indices[30] = 4; indices[31] = 0; indices[32] = 3;
-	indices[33] = 4; indices[34] = 3; indices[35] = 7;
+	indices[30] = 20; indices[31] = 22; indices[32] = 21;
+	indices[33] = 20; indices[34] = 23; indices[35] = 22;
 
 	IB->Unlock();
+
+	D3DXCreateTextureFromFile(Device, L"crate.jpg", &Tex);
+
+	Device->SetTexture(0, Tex);
+
+	Device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	Device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	Device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_POINT);
+
+	Device->SetRenderState(D3DRS_LIGHTING, false);
 
 	// Position and aim the camera
 	D3DXVECTOR3 position(0.0f, 0.0f, -5.0f);
@@ -105,7 +142,7 @@ bool Setup() {
 	Device->SetTransform(D3DTS_PROJECTION, &proj);
 
 	// Switch to wireframe mode.
-	Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	//Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	return true;
 }
@@ -139,7 +176,7 @@ bool Display(float timeDelta) {
 		Device->SetFVF(Vertex::FVF);
 		
 		// Draw cube.
-		Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 8, 0, 12);
+		Device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 24, 0, 12);
 
 		Device->EndScene();
 		Device->Present(0, 0, 0, 0);
@@ -150,6 +187,7 @@ bool Display(float timeDelta) {
 void Cleanup() {
 	d3d::Release<IDirect3DVertexBuffer9*>(VB);
 	d3d::Release<IDirect3DIndexBuffer9*>(IB);
+	d3d::Release<IDirect3DTexture9*>(Tex);
 }
 
 LRESULT CALLBACK d3d::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
