@@ -1,5 +1,6 @@
 #include "d3dUtility.h"
 #include "stdio.h"
+#include "iostream"
 
 IDirect3DDevice9* Device = 0;
 const int Width = 800;
@@ -10,7 +11,7 @@ DWORD FrameCnt = 0;
 float TimeElapsed = 0;
 float FPS = 0;
 char tmp[9];
-WCHAR FPSString[9];
+WCHAR FPSString[10];
 
 bool Setup() {
 	D3DXFONT_DESC df;
@@ -40,9 +41,9 @@ bool Display(float timeDelta) {
 		TimeElapsed += timeDelta;
 		if (TimeElapsed >= 1.0f) {
 			FPS = (float)FrameCnt / TimeElapsed;
-			
-			wsprintf(FPSString, L"%f", FPS);
-			FPSString[8] = '\0'; // mark end of string
+			std::cout << FPS << std::endl;
+			swprintf(FPSString, L"%f", FPS);
+			FPSString[9] = '\0'; // mark end of string
 			//wcscpy(FPSString, (const)tmp);
 			
 			TimeElapsed = 0.0f;
