@@ -10,7 +10,6 @@ ID3DXFont* font = 0;
 DWORD FrameCnt = 0;
 float TimeElapsed = 0;
 float FPS = 0;
-char tmp[9];
 WCHAR FPSString[10];
 
 bool Setup() {

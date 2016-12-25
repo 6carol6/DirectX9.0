@@ -7,6 +7,8 @@ const int Width = 800;
 const int Height = 600;
 
 ID3DXMesh* Text = 0;
+D3DXVECTOR3 TextPosition(-2.0f, 0.0f, 0.0f);
+D3DMATERIAL9 TextMtrl = d3d::WHITE_MTRL;
 
 bool Setup() {
 	HDC hdc = CreateCompatibleDC(0);
@@ -40,6 +42,17 @@ bool Setup() {
 	DeleteObject(hFont);
 	DeleteDC(hdc);
 
+	// Light
+	D3DXVECTOR3 lightDir(0.707f, -0.707f, 0.707f);
+	D3DXCOLOR color(1.0f, 1.0f, 1.0f, 1.0f);
+	D3DLIGHT9 light = d3d::InitDirectionalLight(&lightDir, &color);
+
+	Device->SetLight(0, &light);
+	Device->LightEnable(0, true);
+
+	Device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	Device->SetRenderState(D3DRS_SPECULARENABLE, true);
+
 	// Position and aim the camera
 	D3DXVECTOR3 position(0.0f, 0.0f, -5.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
@@ -60,8 +73,6 @@ bool Setup() {
 		1000.0f);
 	Device->SetTransform(D3DTS_PROJECTION, &proj);
 
-	// Switch to wireframe mode.
-	Device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	return true;
 }
@@ -71,14 +82,42 @@ void Cleanup() {
 
 bool Display(float timeDelta) {
 	if (Device) {
-		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xffffffff, 1.0f, 0);
-		Device->BeginScene();
 
+		D3DXMATRIX W;
+		D3DXMatrixTranslation(&W,
+			TextPosition.x,
+			TextPosition.y,
+			TextPosition.z);
+
+		Device->SetTransform(D3DTS_WORLD, &W);
+
+		// spin the cube:
+		D3DXMATRIX Rx, Ry;
+
+		//rotate 45 degrees on x-axis
+		D3DXMatrixRotationX(&Rx, 3.14f / 4.0f);
+
+		//increment y-rotation angle each frame
+		static float y = 0.0f;
+		D3DXMatrixRotationY(&Ry, y);
+		y += timeDelta;
+
+		// reset angle to zero when angle reaches 2*PI
+		if (y >= 6.28f) y = 0.0f;
+
+		W *= Ry;
+
+		Device->SetTransform(D3DTS_WORLD, &W);
+
+		Device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0xff000000, 1.0f, 0L);
+		Device->BeginScene();
+		Device->SetMaterial(&TextMtrl);
 		Text->DrawSubset(0);
 
 		Device->EndScene();
 		Device->Present(0, 0, 0, 0);
 	}
+	return true;
 	return true;
 }
 
