@@ -11,6 +11,20 @@ namespace d3d {
 	const D3DXCOLOR YELLOW(D3DCOLOR_XRGB(255, 255, 0));
 	const D3DXCOLOR CYAN(D3DCOLOR_XRGB(0, 255, 255));
 	const D3DXCOLOR MAGENTA(D3DCOLOR_XRGB(255, 0, 255));
+	//const float INF = FLT_MAX;
+	const float EPSILON = 0.001f;
+
+	struct BoundingBox {
+		BoundingBox();
+		bool isPointInside(D3DXVECTOR3& p);
+		D3DXVECTOR3 _min;
+		D3DXVECTOR3 _max;
+	};
+	struct BoundingSphere {
+		BoundingSphere();
+		D3DXVECTOR3 _center;
+		float _radius;
+	};
 
 	bool InitD3D(
 		HINSTANCE hInstance,
